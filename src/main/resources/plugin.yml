@@ -1,0 +1,5 @@
+name: ServerStatus
+version: '${project.version}'
+main: me.matiego.serverstatus.Main
+api-version: 1.19
+author: Matiego
