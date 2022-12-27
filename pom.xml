@@ -30,7 +30,63 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.3.0</version>
+                <configuration>
+                    <relocations>
+<!--                        <relocation>-->
+<!--                            <pattern>org.intellij.lang.annotations</pattern>-->
+<!--                            <shadedPattern>me.matiego.serverstatus.resources.org.intellij.lang.annotations</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                        <relocation>-->
+<!--                            <pattern>org.jetbrains.annotations</pattern>-->
+<!--                            <shadedPattern>me.matiego.serverstatus.resources.org.jetbrains.annotations</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                        <relocation>-->
+<!--                            <pattern>org.json</pattern>-->
+<!--                            <shadedPattern>me.matiego.serverstatus.resources.org.json</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                        <relocation>-->
+<!--                            <pattern>org.objectweb.asm</pattern>-->
+<!--                            <shadedPattern>me.matiego.serverstatus.resources.org.objectweb.asm</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                        <relocation>-->
+<!--                            <pattern>okio</pattern>-->
+<!--                            <shadedPattern>me.matiego.serverstatus.resources.okio</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                        <relocation>-->
+<!--                            <pattern>okhttp3</pattern>-->
+<!--                            <shadedPattern>me.matiego.serverstatus.resources.okhttp3</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                        <relocation>-->
+<!--                            <pattern>lombok</pattern>-->
+<!--                            <shadedPattern>me.matiego.serverstatus.resources.lombok</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                        <relocation>-->
+<!--                            <pattern>com.google.gson</pattern>-->
+<!--                            <shadedPattern>me.matiego.serverstatus.resources.com.google.gson</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                        <relocation>-->
+<!--                            <pattern>com.zwitserloot.cmdreader</pattern>-->
+<!--                            <shadedPattern>me.matiego.serverstatus.resources.com.zwitserloot.cmdreader</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                        <relocation>-->
+<!--                            <pattern>club.minnced.discord.webhook</pattern>-->
+<!--                            <shadedPattern>me.matiego.serverstatus.resources.club.minnced.discord.webhook</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                        <relocation>-->
+<!--                            <pattern>kotlin</pattern>-->
+<!--                            <shadedPattern>me.matiego.serverstatus.resources.kotlin</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                        <relocation>-->
+<!--                            <pattern>Class50.lombok</pattern>-->
+<!--                            <shadedPattern>me.matiego.serverstatus.resources.Class50.lombok</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                        <relocation>-->
+<!--                            <pattern>org.slf4j</pattern>-->
+<!--                            <shadedPattern>me.matiego.serverstatus.resources.org.slf4j</shadedPattern>-->
+<!--                        </relocation>-->
+                    </relocations>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>

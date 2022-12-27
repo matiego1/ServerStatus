@@ -12,10 +12,11 @@ import org.jetbrains.annotations.Nullable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Data {
-    public Data(@NotNull String address, boolean online, @NotNull String motd, @NotNull List<String> players) {
+    public Data(@NotNull String address, boolean online, @Nullable String motd, @Nullable List<String> players) {
         this.address = address;
         this.online = online;
         this.motd = motd;
@@ -28,10 +29,10 @@ public class Data {
     @Getter
     private final boolean online;
     @Getter
-    @NotNull
+    @Nullable
     private final String motd;
     @Getter
-    @NotNull
+    @Nullable
     private final List<String> players;
 
     public void sendWebhook(@NotNull String url) {
@@ -45,7 +46,7 @@ public class Data {
                 stringBuilder.append("`TAK`\n");
                 stringBuilder.append("**MOTD:** `").append(getMotd()).append("`\n");
                 List<String> players = getPlayers();
-                stringBuilder.append("**Gracze online (").append(players.size()).append("):**\n");
+                stringBuilder.append("**Gracze online (").append(Objects.requireNonNull(players).size()).append("):**\n");
                 for (String player : players) {
                     stringBuilder.append("- `").append(player).append("`\n");
                 }
@@ -72,16 +73,19 @@ public class Data {
             s.close();
 
             JsonObject json = JsonParser.parseString(builder.toString()).getAsJsonObject();
+            if (json == null) return null;
+
+            boolean online = json.get("online").getAsBoolean();
+            if (!online) return new Data(address, false, null, null);
 
             List<String> players = new ArrayList<>();
-            for (JsonElement e : json.get("players").getAsJsonObject().get("list").getAsJsonArray()) {
+            for (JsonElement e : json.getAsJsonObject("players").getAsJsonArray("list")) {
                 players.add(e.getAsJsonObject().get("name_raw").getAsString());
             }
-
             return new Data(
                     address,
                     json.get("online").getAsBoolean(),
-                    json.get("motd").getAsJsonObject().get("raw").getAsString(),
+                    json.getAsJsonObject("motd").get("raw").getAsString(),
                     players
             );
         } catch(Exception e) {
@@ -95,6 +99,12 @@ public class Data {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Data data = (Data) o;
-        return isOnline() == data.isOnline() && getMotd().equals(data.getMotd()) && getPlayers().equals(data.getPlayers());
+        return isOnline() == data.isOnline() && check(getMotd(), data.getMotd()) && check(getPlayers(), data.getPlayers());
+    }
+
+    private boolean check(@Nullable Object a, @Nullable Object b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return a.equals(b);
     }
 }
