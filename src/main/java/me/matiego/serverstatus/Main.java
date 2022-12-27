@@ -34,7 +34,7 @@ public final class Main extends JavaPlugin {
             if (current.equals(last)) return;
             last = current;
             current.sendWebhook(getConfig().getString("webhook-url", ""));
-        }, 200, 6000);
+        }, 200, 3600);
     }
 
     @Override
