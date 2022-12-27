@@ -38,20 +38,20 @@ public class Data {
     public void sendWebhook(@NotNull String url) {
         try (WebhookClient client = WebhookClient.withUrl(url)) {
             WebhookMessageBuilder builder = new WebhookMessageBuilder();
-            builder.setUsername("Status serwera " + getAddress());
+            builder.setUsername("Server status - " + getAddress());
 
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("**Czy online:** ");
+            stringBuilder.append("**Is online:** ");
             if (isOnline()) {
-                stringBuilder.append("`TAK`\n");
+                stringBuilder.append("`YES`\n");
                 stringBuilder.append("**MOTD:** `").append(getMotd()).append("`\n");
                 List<String> players = getPlayers();
-                stringBuilder.append("**Gracze online (").append(Objects.requireNonNull(players).size()).append("):**\n");
+                stringBuilder.append("**Online players (").append(Objects.requireNonNull(players).size()).append("):**\n");
                 for (String player : players) {
                     stringBuilder.append("- `").append(player).append("`\n");
                 }
             } else {
-                stringBuilder.append("`NIE`\n");
+                stringBuilder.append("`NO`\n");
             }
             builder.setContent(stringBuilder.toString());
 
