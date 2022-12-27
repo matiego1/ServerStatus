@@ -20,6 +20,8 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        saveDefaultConfig();
+
         task = Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
             reloadConfig();
             String address = getConfig().getString("address");
