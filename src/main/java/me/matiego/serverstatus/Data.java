@@ -99,12 +99,17 @@ public class Data {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Data data = (Data) o;
-        return isOnline() == data.isOnline() && check(getMotd(), data.getMotd()) && check(getPlayers(), data.getPlayers());
+        return isOnline() == data.isOnline() && check(getMotd(), data.getMotd()) && checkList(getPlayers(), data.getPlayers());
     }
 
     private boolean check(@Nullable Object a, @Nullable Object b) {
         if (a == null && b == null) return true;
         if (a == null || b == null) return false;
         return a.equals(b);
+    }
+    private boolean checkList(@Nullable List<?> a, @Nullable List<?> b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return a.stream().sorted().toList().equals(b.stream().sorted().toList());
     }
 }
