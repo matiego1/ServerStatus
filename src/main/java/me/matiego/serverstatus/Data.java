@@ -16,10 +16,9 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Data {
-    public Data(@NotNull String address, boolean online, @Nullable String motd, @Nullable List<String> players) {
+    public Data(@NotNull String address, boolean online, @Nullable List<String> players) {
         this.address = address;
         this.online = online;
-        this.motd = motd;
         this.players = players;
     }
 
@@ -28,9 +27,6 @@ public class Data {
     private final String address;
     @Getter
     private final boolean online;
-    @Getter
-    @Nullable
-    private final String motd;
     @Getter
     @Nullable
     private final List<String> players;
@@ -44,11 +40,16 @@ public class Data {
             stringBuilder.append("**Is online:** ");
             if (isOnline()) {
                 stringBuilder.append("`YES`\n");
-                stringBuilder.append("**MOTD:** `").append(getMotd()).append("`\n");
+
                 List<String> players = getPlayers();
-                stringBuilder.append("**Online players (").append(Objects.requireNonNull(players).size()).append("):**\n");
-                for (String player : players) {
-                    stringBuilder.append("- `").append(player).append("`\n");
+                Objects.requireNonNull(players);
+                if (players.isEmpty()) {
+                    stringBuilder.append("*Nobody is online.*\n");
+                } else {
+                    stringBuilder.append("**Online players (").append(players.size()).append("):**\n");
+                    for (String player : players) {
+                        stringBuilder.append("- `").append(player).append("`\n");
+                    }
                 }
             } else {
                 stringBuilder.append("`NO`\n");
@@ -76,7 +77,7 @@ public class Data {
             if (json == null) return null;
 
             boolean online = json.get("online").getAsBoolean();
-            if (!online) return new Data(address, false, null, null);
+            if (!online) return new Data(address, false, null);
 
             List<String> players = new ArrayList<>();
             for (JsonElement e : json.getAsJsonObject("players").getAsJsonArray("list")) {
@@ -85,7 +86,6 @@ public class Data {
             return new Data(
                     address,
                     json.get("online").getAsBoolean(),
-                    json.getAsJsonObject("motd").get("raw").getAsString(),
                     players
             );
         } catch(Exception e) {
@@ -99,14 +99,9 @@ public class Data {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Data data = (Data) o;
-        return isOnline() == data.isOnline() && check(getMotd(), data.getMotd()) && checkList(getPlayers(), data.getPlayers());
+        return isOnline() == data.isOnline() && checkList(getPlayers(), data.getPlayers());
     }
 
-    private boolean check(@Nullable Object a, @Nullable Object b) {
-        if (a == null && b == null) return true;
-        if (a == null || b == null) return false;
-        return a.equals(b);
-    }
     private boolean checkList(@Nullable List<?> a, @Nullable List<?> b) {
         if (a == null && b == null) return true;
         if (a == null || b == null) return false;
