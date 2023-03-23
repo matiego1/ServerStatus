@@ -9,13 +9,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.List;
 
 public final class Main extends JavaPlugin {
 
-    private Data last;
-    private BukkitTask task;
     @Getter
     private static Main instance;
+    private final HashMap<String, Data> data = new HashMap<>();
+    private BukkitTask task;
 
     @Override
     public void onEnable() {
@@ -24,21 +26,27 @@ public final class Main extends JavaPlugin {
 
         task = Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
             reloadConfig();
-            String address = getConfig().getString("address");
-            if (address == null) {
-                getLogger().severe("An error occurred while loading the server address from the configuration file.");
-                return;
+            List<String> addresses = getConfig().getStringList("addresses");
+            if (addresses.isEmpty()) return;
+
+            for (String address : addresses) {
+                Data current = Data.load(address);
+                if (current == null) continue;
+
+                if (current.equals(data.remove(address))) continue;
+                data.put(current.getAddress(), current);
+
+                if (!current.sendWebhook(getConfig().getString("webhook-url", ""))) {
+                    //to avoid spam on the console if the webhook url is invalid
+                    return;
+                }
             }
-            Data current = Data.load(address);
-            if (current == null) return;
-            if (current.equals(last)) return;
-            last = current;
-            current.sendWebhook(getConfig().getString("webhook-url", ""));
         }, 20 * 10, 20 * 60 * 5);
     }
 
     @Override
     public void onDisable() {
+        data.clear();
         if (task != null) task.cancel();
     }
 

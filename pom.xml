@@ -6,7 +6,7 @@
 
     <groupId>me.matiego</groupId>
     <artifactId>server-status</artifactId>
-    <version>1.0.0</version>
+    <version>${maven.build.timestamp}</version>
     <packaging>jar</packaging>
 
     <name>Server Status</name>
@@ -14,6 +14,7 @@
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yy.MM.dd</maven.build.timestamp.format>
     </properties>
 
     <build>
