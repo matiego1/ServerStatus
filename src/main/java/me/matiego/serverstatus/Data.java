@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class Data {
@@ -31,7 +30,7 @@ public class Data {
     @Nullable
     private final List<String> players;
 
-    public boolean sendWebhook(@NotNull String url) {
+    public void sendWebhook(@NotNull String url) {
         try (WebhookClient client = WebhookClient.withUrl(url)) {
             WebhookMessageBuilder builder = new WebhookMessageBuilder();
             builder.setUsername("Server status - " + getAddress());
@@ -42,10 +41,7 @@ public class Data {
                 stringBuilder.append("`YES`\n");
 
                 List<String> players = getPlayers();
-                Objects.requireNonNull(players);
-                if (players.isEmpty()) {
-                    stringBuilder.append("*Nobody is online.*\n");
-                } else {
+                if (players != null && !players.isEmpty()) {
                     stringBuilder.append("**Online players (").append(players.size()).append("):**\n");
                     for (String player : players) {
                         stringBuilder.append("- `").append(player).append("`\n");
@@ -58,11 +54,9 @@ public class Data {
 
             client.send(builder.build());
 
-            return true;
         } catch (Exception e) {
             Main.error("An error occurred while sending the webhook.", e);
         }
-        return false;
     }
 
     public static @Nullable Data load(@NotNull String address) {
