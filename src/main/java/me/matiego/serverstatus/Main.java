@@ -47,9 +47,11 @@ public final class Main extends JavaPlugin {
                 Data current = Data.load(address);
                 if (current == null) continue;
 
+                Data previous = data.put(current.getAddress(), current);
+
                 if (config != null && storage.checkIfDataIsSaved(config, current)) continue;
 
-                if (current.equals(data.put(current.getAddress(), current))) continue;
+                if (current.equals(previous)) continue;
 
                 if (!current.sendWebhook(getConfig().getString("webhook-url", ""))) {
                     //to avoid spam in the console if the webhook url is invalid
