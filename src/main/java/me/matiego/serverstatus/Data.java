@@ -30,7 +30,7 @@ public class Data {
     @Nullable
     private final List<String> players;
 
-    public void sendWebhook(@NotNull String url) {
+    public boolean sendWebhook(@NotNull String url) {
         try (WebhookClient client = WebhookClient.withUrl(url)) {
             WebhookMessageBuilder builder = new WebhookMessageBuilder();
             builder.setUsername("Server status - " + getAddress());
@@ -54,9 +54,11 @@ public class Data {
 
             client.send(builder.build());
 
+            return true;
         } catch (Exception e) {
             Main.error("An error occurred while sending the webhook.", e);
         }
+        return false;
     }
 
     public static @Nullable Data load(@NotNull String address) {
@@ -103,5 +105,14 @@ public class Data {
         if (a == null && b == null) return true;
         if (a == null || b == null) return false;
         return a.stream().sorted().toList().equals(b.stream().sorted().toList());
+    }
+
+    @Override
+    public String toString() {
+        return "Data{" +
+                "address='" + address + '\'' +
+                ", online=" + online +
+                ", players=" + players +
+                '}';
     }
 }
