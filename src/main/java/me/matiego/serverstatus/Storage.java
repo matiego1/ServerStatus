@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class Storage {
@@ -20,21 +21,24 @@ public class Storage {
         FileConfiguration config = loadConfig(true);
         if (config == null) return;
         for (Data current : data) {
-            config.set(current.getAddress(), current.toString());
+            config.set(convertAddress(current.getAddress()), current.toString());
         }
+        saveConfig(config);
     }
 
-    public boolean checkIfDataIsSaved(@NotNull Data data) {
-        FileConfiguration config = loadConfig(false);
-        if (config == null) return false;
-        return data.toString().equals(config.getString(data.getAddress()));
+    public boolean checkIfDataIsSaved(@NotNull FileConfiguration config, @NotNull Data data) {
+        return data.toString().equals(config.getString(convertAddress(data.getAddress())));
     }
 
-    private @Nullable FileConfiguration loadConfig(boolean replaceFile) {
+    private @NotNull String convertAddress(@NotNull String address) {
+        return address.replace(".", "_");
+    }
+
+    public @Nullable FileConfiguration loadConfig(boolean replaceOldFile) {
         try {
             File file = new File(plugin.getDataFolder(), FILE_NAME);
             if (!file.exists()) {
-                plugin.saveResource(FILE_NAME, replaceFile);
+                plugin.saveResource(FILE_NAME, replaceOldFile);
             }
 
             FileConfiguration config = new YamlConfiguration();
@@ -44,5 +48,14 @@ public class Storage {
             Main.error("An error occurred while loading " + FILE_NAME, e);
         }
         return null;
+    }
+
+    private void saveConfig(@NotNull FileConfiguration config) {
+        try {
+            File file = new File(plugin.getDataFolder(), FILE_NAME);
+            config.save(file);
+        } catch (IOException e) {
+            Main.error("An error occurred while saving " + FILE_NAME, e);
+        }
     }
 }

@@ -2,6 +2,7 @@ package me.matiego.serverstatus;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -30,27 +31,31 @@ public final class Main extends JavaPlugin {
         task = Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
             reloadConfig();
             List<String> addresses = getConfig().getStringList("addresses");
+
             if (addresses.isEmpty()) {
                 firstCheck = false;
                 return;
+            }
+
+            FileConfiguration config = null;
+            if (firstCheck) {
+                config = storage.loadConfig(false);
+                firstCheck = false;
             }
 
             for (String address : addresses) {
                 Data current = Data.load(address);
                 if (current == null) continue;
 
-                if (firstCheck && storage.checkIfDataIsSaved(current)) continue;
+                if (config != null && storage.checkIfDataIsSaved(config, current)) continue;
 
                 if (current.equals(data.put(current.getAddress(), current))) continue;
 
                 if (!current.sendWebhook(getConfig().getString("webhook-url", ""))) {
-                    firstCheck = false;
                     //to avoid spam in the console if the webhook url is invalid
                     return;
                 }
             }
-
-            firstCheck = false;
         }, 20 * 10, 20 * 60 * 5);
     }
 
