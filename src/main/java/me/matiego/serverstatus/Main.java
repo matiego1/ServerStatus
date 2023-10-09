@@ -47,9 +47,9 @@ public final class Main extends JavaPlugin {
                 Data current = Data.load(address);
                 if (current == null) continue;
 
-                Data previous = data.put(current.getAddress(), current);
+                Data previous = data.put(address, current);
 
-                if (config != null && storage.checkIfDataIsSaved(config, current)) continue;
+                if (previous == null && config != null && storage.checkIfDataIsSaved(config, current)) continue;
 
                 if (current.equals(previous)) continue;
 
